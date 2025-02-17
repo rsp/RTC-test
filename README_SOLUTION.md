@@ -66,7 +66,7 @@ It wasn't clear wheather the mappings need to be refreshed periodically, so just
 
 Currently the mappings and the odds state get replaced on updates. It is not clear if it would be better to append the data to the old one without knowing more context.
 
-The current assumption is that the simulation endpoints always return the complete data. If this assumption is not correct then the cache service would need to be updated. Currently it replaces the data on every update for simplicity and to avoiid memory leaks.
+The current assumption is that the simulation endpoints always return the complete data. If this assumption is not correct then the cache service would need to be updated. Currently it replaces the data on every update for simplicity and to avoid memory leaks.
 
 ## Debugging
 
@@ -77,9 +77,13 @@ There are few endpoints for debugging and displaying the internal state on vario
 - `curl http://localhost:3001/client/internal/odds-target`
 - `curl http://localhost:3001/client/internal/odds-target-cached`
 
+From the above, the first 3 connect directly to the simulation server, skipping the cache.
+
 Main required endpoint:
 
 - `curl http://localhost:3001/client/state`
+
+It returns cached data and doesn't cause any external requests on its own.
 
 ## Dependencies
 
@@ -133,4 +137,5 @@ Improvemenets that could be done to develop this into a real world project - som
   - many files have 100% test coverage and the tests could be split into multiple files
 - add more tests
   - some infrastructure and boilerplate parts of the code are not tested, as the focus was put to have 100% coverage on the parts that actually convert the data, rather than e.g. starting the server etc.
+- add end to end tests for the api endpoint
 - some linter rules could be tweaked but in general they are pretty solid
