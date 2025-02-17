@@ -26,3 +26,11 @@ app.get(
     return response;
   })
 );
+
+app.get(
+  `${config.api.root}/internal/odds-ids`,
+  handler(async () => {
+    const response = await stateService.getOddsIds();
+    return response;
+  })
+);
