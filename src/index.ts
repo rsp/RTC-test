@@ -5,7 +5,7 @@ import { config } from './config.js';
 import logger from './logger.js';
 import { SimulationClient } from './simulationClient.js';
 import { StateService } from './stateService.js';
-import { handler } from './utils.js';
+import { handler, handlerSync } from './utils.js';
 
 const app = express();
 const log = logger.getLogger('api');
@@ -17,9 +17,17 @@ const simulationClient = new SimulationClient(fetch, config.requestUrls);
 const cacheService = new CacheService(simulationClient, config.updateIntervalsMs);
 const stateService = new StateService(simulationClient, cacheService);
 
-app.get(`${config.api.root}/state`, (req, res) => {
-  res.json({});
-});
+/**
+ * Endpoint required in this task
+ */
+app.get(
+  `${config.api.root}/state`,
+  handlerSync(() => {
+    return stateService.getClientState();
+  })
+);
+
+// Below are enpoints for testing and debugging
 
 app.get(
   `${config.api.root}/internal/raw-data`,

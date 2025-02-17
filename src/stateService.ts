@@ -1,5 +1,10 @@
 import { CacheService } from './cacheService.js';
-import { convertOrigToTargetOdds, parseMappings, parseOddsOrig } from './converters.js';
+import {
+  convertOrigToTargetOdds,
+  convertTargetOddsToClientState,
+  parseMappings,
+  parseOddsOrig,
+} from './converters.js';
 import { SimulationClient } from './simulationClient.js';
 
 export class StateService {
@@ -13,10 +18,9 @@ export class StateService {
     return state;
   }
 
-  // XXX
   getClientState() {
     const state = this.cacheService.getState();
-    return state;
+    return convertTargetOddsToClientState(state);
   }
 
   async getOddsOrig() {
