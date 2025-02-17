@@ -13,7 +13,7 @@ export class SimulationClient {
   }
 
   async getRawOdds() {
-    const res = await this.fetchFunction(this.urls.odds);
+    const res = await this.fetchFunction(this.urls.state);
     const data = (await res.json()) as unknown;
     return data;
   }

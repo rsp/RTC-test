@@ -34,3 +34,11 @@ app.get(
     return response;
   })
 );
+
+app.get(
+  `${config.api.root}/internal/odds-target`,
+  handler(async () => {
+    const response = await stateService.getOddsTarget();
+    return response;
+  })
+);
