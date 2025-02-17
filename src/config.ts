@@ -1,7 +1,7 @@
 const DEFAULT_API_PORT = 3001;
 const DEFAULT_ROOT_PATH = '/client';
 const DEFAULT_UPDATE_INTERVAL_MS = 1000;
-const DEFAULT_STATE_URL = 'http://localhost:3000/api/state';
+const DEFAULT_ODDS_URL = 'http://localhost:3000/api/state';
 const DEFAULT_MAPPINGS_URL = 'http://localhost:3000/api/mappings';
 
 export interface Config {
@@ -11,7 +11,7 @@ export interface Config {
   };
   requestUrls: {
     mappings: string;
-    state: string;
+    odds: string;
   };
   updateIntervalMs: number;
 }
@@ -23,7 +23,7 @@ export const config: Config = {
   },
   requestUrls: {
     mappings: process.env.RTC_ADAPTER_MAPPINGS_URL ?? DEFAULT_MAPPINGS_URL,
-    state: process.env.RTC_ADAPTER_STATE_URL ?? DEFAULT_STATE_URL,
+    odds: process.env.RTC_ADAPTER_ODDS_URL ?? DEFAULT_ODDS_URL,
   },
   updateIntervalMs:
     Number(process.env.RTC_ADAPTER_UPDATE_INTERVAL_MS) || DEFAULT_UPDATE_INTERVAL_MS,
