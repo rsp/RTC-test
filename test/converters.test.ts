@@ -62,7 +62,7 @@ const oddsIdsExamle = {
       sportEventId: '995e0722-4118-4f8e-a517-82f6ea240673',
       sportEventStatusId: 'ac68a563-e511-4776-b2ee-cd395c7dc424',
       sportId: 'c0a1f678-dbe5-4cc8-aa52-8c822dc65267',
-      startTime: '1709900432183',
+      startTime: 1709900432183,
     },
     {
       awayCompetitorId: 'b582b685-e75c-4139-8274-d19f078eabef',
@@ -75,7 +75,7 @@ const oddsIdsExamle = {
       sportEventId: '4bb7b78f-6a23-43d0-a61a-1341f03f64e0',
       sportEventStatusId: '7fa4e60c-71ad-4e76-836f-5c2bc6602156',
       sportId: 'c0a1f678-dbe5-4cc8-aa52-8c822dc65267',
-      startTime: '1709900380135',
+      startTime: 1709900380135,
     },
   ],
 } satisfies {

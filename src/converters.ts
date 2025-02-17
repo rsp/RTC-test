@@ -25,7 +25,7 @@ export interface OddsRecordIds {
   sportEventId: string;
   sportEventStatusId: string;
   sportId: string;
-  startTime: string;
+  startTime: number;
 }
 
 export interface OddsScores {
@@ -67,7 +67,7 @@ export function parseOddsIds(input: string): OddsIds {
       sportEventId,
       sportId,
       competitionId,
-      startTime,
+      startTimeRaw,
       homeCompetitorId,
       awayCompetitorId,
       sportEventStatusId,
@@ -77,7 +77,7 @@ export function parseOddsIds(input: string): OddsIds {
       !sportEventId ||
       !sportId ||
       !competitionId ||
-      !startTime ||
+      !startTimeRaw ||
       !homeCompetitorId ||
       !awayCompetitorId ||
       !sportEventStatusId
@@ -85,6 +85,7 @@ export function parseOddsIds(input: string): OddsIds {
       throw new Error(`Error parsing odds for record: "${record}"`);
     }
     const scores = parseScoresIds(scoresString);
+    const startTime = Number(startTimeRaw);
     const oddsIdsRecord = {
       awayCompetitorId,
       competitionId,
