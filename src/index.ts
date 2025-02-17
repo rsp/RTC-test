@@ -28,9 +28,9 @@ app.get(
 );
 
 app.get(
-  `${config.api.root}/internal/odds-ids`,
+  `${config.api.root}/internal/odds-orig`,
   handler(async () => {
-    const response = await stateService.getOddsIds();
+    const response = await stateService.getOddsOrig();
     return response;
   })
 );

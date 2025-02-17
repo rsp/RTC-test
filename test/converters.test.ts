@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  OddsIds,
-  OddsScoresIds,
+  OddsOrig,
+  OddsScoresOrig,
   parseMappings,
-  parseOddsIds,
-  parseScoresIds,
-  parseScoresRecordIds,
+  parseOddsOrig,
+  parseScoresOrig,
+  parseScoresRecordOrig,
 } from '../src/converters.js';
 
 const mappingExample = {
@@ -36,7 +36,7 @@ const scoresIdsExamle = {
   ],
 } satisfies {
   raw: string;
-  result: OddsScoresIds[];
+  result: OddsScoresOrig[];
 };
 
 const scoresRecordsIdsExample = {
@@ -48,7 +48,7 @@ const scoresRecordsIdsExample = {
   },
 } satisfies {
   raw: string;
-  result: OddsScoresIds;
+  result: OddsScoresOrig;
 };
 
 const oddsIdsExamle = {
@@ -80,7 +80,7 @@ const oddsIdsExamle = {
   ],
 } satisfies {
   raw: string;
-  result: OddsIds;
+  result: OddsOrig;
 };
 
 describe('converters', () => {
@@ -102,33 +102,33 @@ describe('converters', () => {
     });
   });
 
-  describe('parseScoresRecordIds', () => {
+  describe('parseScoresRecordOrig', () => {
     it('should return undefined for empty input', () => {
-      const result = parseScoresRecordIds('');
+      const result = parseScoresRecordOrig('');
       expect(result).toEqual(undefined);
     });
 
     it('should parse example input', () => {
-      const result = parseScoresRecordIds(scoresRecordsIdsExample.raw);
+      const result = parseScoresRecordOrig(scoresRecordsIdsExample.raw);
       expect(result).toEqual(scoresRecordsIdsExample.result);
     });
   });
 
-  describe('parseScoresIds', () => {
+  describe('parseScoresOrig', () => {
     it('should return empty array for empty input', () => {
-      const result = parseScoresIds('');
+      const result = parseScoresOrig('');
       expect(result).toEqual([]);
     });
 
     it('should parse example input', () => {
-      const result = parseScoresIds(scoresIdsExamle.raw);
+      const result = parseScoresOrig(scoresIdsExamle.raw);
       expect(result).toEqual(scoresIdsExamle.result);
     });
   });
 
-  describe('parseOddsIds', () => {
+  describe('parseOddsOrig', () => {
     it('should parse example input', () => {
-      const result = parseOddsIds(oddsIdsExamle.raw);
+      const result = parseOddsOrig(oddsIdsExamle.raw);
       expect(result).toEqual(oddsIdsExamle.result);
     });
   });

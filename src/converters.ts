@@ -1,10 +1,11 @@
 export type Mapping = Map<string, string>;
 
 /**
- * The types with "Ids" suffix are teh ones that don't have the IDs substituted.
+ * The types with "Orig" suffix are the ones that don't have the IDs substituted
+ * and have original date formats.
  */
 export type Odds = OddsRecord[];
-export type OddsIds = OddsRecordIds[];
+export type OddsOrig = OddsRecordOrig[];
 
 export interface OddsRecord {
   awayCompetitor: string;
@@ -17,11 +18,11 @@ export interface OddsRecord {
   startTime: string;
 }
 
-export interface OddsRecordIds {
+export interface OddsRecordOrig {
   awayCompetitorId: string;
   competitionId: string;
   homeCompetitorId: string;
-  scores: OddsScoresIds[];
+  scores: OddsScoresOrig[];
   sportEventId: string;
   sportEventStatusId: string;
   sportId: string;
@@ -34,7 +35,7 @@ export interface OddsScores {
   period: string;
 }
 
-export interface OddsScoresIds {
+export interface OddsScoresOrig {
   awayScore: number;
   homeScore: number;
   periodId: string;
@@ -60,8 +61,8 @@ export function parseMappings(input: string): Mapping {
   return mapping;
 }
 
-export function parseOddsIds(input: string): OddsIds {
-  const odds: OddsIds = [];
+export function parseOddsOrig(input: string): OddsOrig {
+  const odds: OddsOrig = [];
   for (const record of input.split(ODDS_RECORD_SEPARATOR)) {
     const [
       sportEventId,
@@ -84,9 +85,9 @@ export function parseOddsIds(input: string): OddsIds {
     ) {
       throw new Error(`Error parsing odds for record: "${record}"`);
     }
-    const scores = parseScoresIds(scoresString);
+    const scores = parseScoresOrig(scoresString);
     const startTime = Number(startTimeRaw);
-    const oddsIdsRecord = {
+    const oddsOrigRecord = {
       awayCompetitorId,
       competitionId,
       homeCompetitorId,
@@ -96,23 +97,23 @@ export function parseOddsIds(input: string): OddsIds {
       sportId,
       startTime,
     };
-    odds.push(oddsIdsRecord);
+    odds.push(oddsOrigRecord);
   }
   return odds;
 }
 
-export function parseScoresIds(scoresString: string): OddsScoresIds[] {
+export function parseScoresOrig(scoresString: string): OddsScoresOrig[] {
   const records = scoresString.split(ODDS_SCORES_SEPARATOR);
-  const scores: OddsScoresIds[] = records
-    .map(parseScoresRecordIds)
-    .filter((value): value is OddsScoresIds => value !== undefined);
+  const scores: OddsScoresOrig[] = records
+    .map(parseScoresRecordOrig)
+    .filter((value): value is OddsScoresOrig => value !== undefined);
   return scores;
 }
 
-export function parseScoresRecordIds(scoresRecordString: string): OddsScoresIds | undefined {
+export function parseScoresRecordOrig(scoresRecordString: string): OddsScoresOrig | undefined {
   const match = ODDS_SCORES_REGEX.exec(scoresRecordString);
   if (match) {
-    const scores: OddsScoresIds = {
+    const scores: OddsScoresOrig = {
       awayScore: Number(match[3]),
       homeScore: Number(match[2]),
       periodId: match[1],
