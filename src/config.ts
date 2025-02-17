@@ -14,7 +14,7 @@ export interface Config {
     mappings: string;
     state: string;
   };
-  updateIntervalMs: {
+  updateIntervalsMs: {
     mappings: number;
     state: number;
   };
@@ -29,7 +29,7 @@ export const config: Config = {
     mappings: process.env.RTC_ADAPTER_MAPPINGS_URL ?? DEFAULT_MAPPINGS_URL,
     state: process.env.RTC_ADAPTER_STATE_URL ?? DEFAULT_STATE_URL,
   },
-  updateIntervalMs: {
+  updateIntervalsMs: {
     mappings:
       Number(process.env.RTC_ADAPTER_MAPPINGS_UPDATE_INTERVAL_MS) ||
       DEFAULT_MAPPINGS_UPDATE_INTERVAL_MS,

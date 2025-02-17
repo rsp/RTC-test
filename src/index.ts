@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { CacheService } from './cacheService.js';
 import { config } from './config.js';
 import logger from './logger.js';
 import { SimulationClient } from './simulationClient.js';
@@ -13,7 +14,8 @@ app.listen(config.api.port);
 log.info(`Started express server and listening on ${String(config.api.port)}`);
 
 const simulationClient = new SimulationClient(fetch, config.requestUrls);
-const stateService = new StateService(simulationClient);
+const cacheService = new CacheService(simulationClient, config.updateIntervalsMs);
+const stateService = new StateService(simulationClient, cacheService);
 
 app.get(`${config.api.root}/state`, (req, res) => {
   res.json({});
@@ -42,3 +44,8 @@ app.get(
     return response;
   })
 );
+
+app.get(`${config.api.root}/internal/odds-target-cached`, (req, res) => {
+  const response = stateService.getCachedState();
+  res.json(response);
+});

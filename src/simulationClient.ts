@@ -12,7 +12,7 @@ export class SimulationClient {
     return data;
   }
 
-  async getRawOdds() {
+  async getRawState() {
     const res = await this.fetchFunction(this.urls.state);
     const data = (await res.json()) as unknown;
     return data;
