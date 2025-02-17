@@ -38,3 +38,16 @@ export const handler = <T>(fn: () => Promise<T>): RequestHandler<unknown, ErrorR
       });
   };
 };
+
+export const handlerSync = <T>(fn: () => T): RequestHandler<unknown, ErrorResponse | T> => {
+  return (req, res) => {
+    try {
+      log.info(`Request to ${req.url}`);
+      res.json(fn());
+    } catch (err: unknown) {
+      const error = errorMessage(err);
+      log.error(`Request to ${req.url} error: ${error}`);
+      res.status(500).json({ error });
+    }
+  };
+};

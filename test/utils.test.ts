@@ -4,7 +4,7 @@
 import { setTimeout as sleep } from 'timers/promises';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { errorMessage, handler } from '../src/utils.js';
+import { errorMessage, handler, handlerSync } from '../src/utils.js';
 
 describe('utils', () => {
   describe('errorMessage', () => {
@@ -58,6 +58,39 @@ describe('utils', () => {
         return Promise.reject(new Error(message));
       })(reqMock, resMock, nextMock);
       await sleep(delay);
+      expect(jsonMock).toHaveBeenCalledOnce();
+      expect(statusMock).toHaveBeenCalledOnce();
+      expect(statusMock).toHaveBeenCalledWith(500);
+    });
+  });
+
+  describe('handlerSync', () => {
+    const jsonMock = vi.fn() as any;
+    const statusMock = vi.fn().mockReturnThis() as any;
+    const nextMock = vi.fn() as any;
+    const reqMock = {} as any;
+    const resMock = {
+      json: jsonMock,
+      status: statusMock,
+    } as any;
+
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    it('should handle success', () => {
+      handlerSync(() => {
+        return { success: '...' };
+      })(reqMock, resMock, nextMock);
+      expect(jsonMock).toHaveBeenCalledOnce();
+      expect(statusMock).not.toHaveBeenCalled();
+    });
+
+    it('should handle error', () => {
+      const message = 'error message';
+      handlerSync(() => {
+        throw new Error(message);
+      })(reqMock, resMock, nextMock);
       expect(jsonMock).toHaveBeenCalledOnce();
       expect(statusMock).toHaveBeenCalledOnce();
       expect(statusMock).toHaveBeenCalledWith(500);
