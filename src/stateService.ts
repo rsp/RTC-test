@@ -13,6 +13,12 @@ export class StateService {
     return state;
   }
 
+  // XXX
+  getClientState() {
+    const state = this.cacheService.getState();
+    return state;
+  }
+
   async getOddsOrig() {
     const odds = await this.simulationClient.getRawState();
     if (typeof odds === 'object' && odds && 'odds' in odds && typeof odds.odds === 'string') {

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  ClientState,
   convertOrigToTargetOdds,
+  convertTargetOddsToClientState,
   Mapping,
   Odds,
   OddsOrig,
@@ -53,6 +55,9 @@ const scoresRecordsIdsExample = {
   raw: string;
   result: OddsScoresOrig;
 };
+
+const oddsIdsExampleIncomplete =
+  '995e0722-4118-4f8e-a517-82f6ea240673,,7ee17545-acd2-4332-869b-1bef06cfaec8,1709900432183,29190088-763e-4d1c-861a-d16dbfcf858c,3cd8eeee-a57c-48a3-845f-93b561a95782,ac68a563-e511-4776-b2ee-cd395c7dc424,\n4bb7b78f-6a23-43d0-a61a-1341f03f64e0,c0a1f678-dbe5-4cc8-aa52-8c822dc65267,194e22c6-53f3-4f36-af06-53f168ebeee8,1709900380135,d6fdf482-8151-4651-92c2-16e9e8ea4b8b,b582b685-e75c-4139-8274-d19f078eabef,7fa4e60c-71ad-4e76-836f-5c2bc6602156,e2d12fef-ae82-4a35-b389-51edb8dc664e@1:2|6c036000-6dd9-485d-97a1-e338e6a32a51@1:2';
 
 const oddsIdsExamle = {
   raw: '995e0722-4118-4f8e-a517-82f6ea240673,c0a1f678-dbe5-4cc8-aa52-8c822dc65267,7ee17545-acd2-4332-869b-1bef06cfaec8,1709900432183,29190088-763e-4d1c-861a-d16dbfcf858c,3cd8eeee-a57c-48a3-845f-93b561a95782,ac68a563-e511-4776-b2ee-cd395c7dc424,\n4bb7b78f-6a23-43d0-a61a-1341f03f64e0,c0a1f678-dbe5-4cc8-aa52-8c822dc65267,194e22c6-53f3-4f36-af06-53f168ebeee8,1709900380135,d6fdf482-8151-4651-92c2-16e9e8ea4b8b,b582b685-e75c-4139-8274-d19f078eabef,7fa4e60c-71ad-4e76-836f-5c2bc6602156,e2d12fef-ae82-4a35-b389-51edb8dc664e@1:2|6c036000-6dd9-485d-97a1-e338e6a32a51@1:2',
@@ -196,6 +201,163 @@ const origToTargetOddsSimplified = {
   target: Odds;
 };
 
+const targetOddsToClientStateExample = {
+  odds: [
+    {
+      awayCompetitor: 'Paris Saint-Germain',
+      competition: 'UEFA Champions League',
+      homeCompetitor: 'Juventus',
+      scores: [{ awayScore: 0, homeScore: 0, period: 'CURRENT' }],
+      sport: 'FOOTBALL',
+      sportEvent: '3eccf850-571f-4e18-8cb3-2c9e3afade7b',
+      sportEventStatus: 'LIVE',
+      startTime: '2024-03-04T10:36:07.812Z',
+    },
+  ],
+  state: {
+    '3eccf850-571f-4e18-8cb3-2c9e3afade7b': {
+      competition: 'UEFA Champions League',
+      competitors: {
+        AWAY: {
+          name: 'Paris Saint-Germain',
+          type: 'AWAY',
+        },
+        HOME: {
+          name: 'Juventus',
+          type: 'HOME',
+        },
+      },
+      id: '3eccf850-571f-4e18-8cb3-2c9e3afade7b',
+      scores: {
+        CURRENT: {
+          away: '0',
+          home: '0',
+          type: 'CURRENT',
+        },
+      },
+      sport: 'FOOTBALL',
+      startTime: '2024-03-04T10:36:07.812Z',
+      status: 'LIVE',
+    },
+  },
+} satisfies {
+  odds: Odds;
+  state: ClientState;
+};
+
+const targetOddsToClientStateMultiple = {
+  odds: [
+    {
+      awayCompetitor: 'AwayX',
+      competition: 'CompX',
+      homeCompetitor: 'HomeX',
+      scores: [
+        { awayScore: 2, homeScore: 4, period: 'CURRENT' },
+        { awayScore: 1, homeScore: 2, period: 'PERIOD_1' },
+        { awayScore: 2, homeScore: 4, period: 'PERIOD_2' },
+      ],
+      sport: 'FOOTBALL',
+      sportEvent: 'X',
+      sportEventStatus: 'LIVE',
+      startTime: '2024-03-04T10:36:07.812Z',
+    },
+    {
+      awayCompetitor: 'AwayY',
+      competition: 'CompY',
+      homeCompetitor: 'HomeY',
+      scores: [
+        { awayScore: 1, homeScore: 1, period: 'CURRENT' },
+        { awayScore: 1, homeScore: 1, period: 'PERIOD_1' },
+      ],
+      sport: 'FOOTBALL',
+      sportEvent: 'Y',
+      sportEventStatus: 'REMOVED',
+      startTime: '2024-03-04T10:36:07.812Z',
+    },
+    {
+      awayCompetitor: 'AwayZ',
+      competition: 'CompZ',
+      homeCompetitor: 'HomeZ',
+      scores: [
+        { awayScore: 3, homeScore: 4, period: 'CURRENT' },
+        { awayScore: 3, homeScore: 4, period: 'PERIOD_1' },
+      ],
+      sport: 'FOOTBALL',
+      sportEvent: 'Z',
+      sportEventStatus: 'LIVE',
+      startTime: '2024-03-04T10:36:07.812Z',
+    },
+  ],
+  state: {
+    X: {
+      competition: 'CompX',
+      competitors: {
+        AWAY: {
+          name: 'AwayX',
+          type: 'AWAY',
+        },
+        HOME: {
+          name: 'HomeX',
+          type: 'HOME',
+        },
+      },
+      id: 'X',
+      scores: {
+        CURRENT: {
+          away: '2',
+          home: '4',
+          type: 'CURRENT',
+        },
+        PERIOD_1: {
+          away: '1',
+          home: '2',
+          type: 'PERIOD_1',
+        },
+        PERIOD_2: {
+          away: '2',
+          home: '4',
+          type: 'PERIOD_2',
+        },
+      },
+      sport: 'FOOTBALL',
+      startTime: '2024-03-04T10:36:07.812Z',
+      status: 'LIVE',
+    },
+    Z: {
+      competition: 'CompZ',
+      competitors: {
+        AWAY: {
+          name: 'AwayZ',
+          type: 'AWAY',
+        },
+        HOME: {
+          name: 'HomeZ',
+          type: 'HOME',
+        },
+      },
+      id: 'Z',
+      scores: {
+        CURRENT: {
+          away: '3',
+          home: '4',
+          type: 'CURRENT',
+        },
+        PERIOD_1: {
+          away: '3',
+          home: '4',
+          type: 'PERIOD_1',
+        },
+      },
+      sport: 'FOOTBALL',
+      startTime: '2024-03-04T10:36:07.812Z',
+      status: 'LIVE',
+    },
+  },
+} satisfies {
+  odds: Odds;
+  state: ClientState;
+};
+
 describe('converters', () => {
   describe('parseMappings', () => {
     it('should fail for invalid input', () => {
@@ -244,6 +406,10 @@ describe('converters', () => {
       const result = parseOddsOrig(oddsIdsExamle.raw);
       expect(result).toEqual(oddsIdsExamle.result);
     });
+
+    it('should fail on invalid data', () => {
+      expect(() => parseOddsOrig(oddsIdsExampleIncomplete)).toThrow();
+    });
   });
 
   describe('convertOrigToTargetOdds', () => {
@@ -251,6 +417,20 @@ describe('converters', () => {
       const { mapping, orig, target } = origToTargetOddsSimplified;
       const result = convertOrigToTargetOdds(orig, mapping);
       expect(result).toEqual(target);
+    });
+  });
+
+  describe('convertTargetOddsToClientState', () => {
+    it('should convert example odds to client state', () => {
+      const { odds, state } = targetOddsToClientStateExample;
+      const result = convertTargetOddsToClientState(odds);
+      expect(result).toEqual(state);
+    });
+
+    it('should skip removed and convert multiple values', () => {
+      const { odds, state } = targetOddsToClientStateMultiple;
+      const result = convertTargetOddsToClientState(odds);
+      expect(result).toEqual(state);
     });
   });
 });

@@ -1,3 +1,28 @@
+export interface ClientCompetitors {
+  AWAY: { name: string; type: 'AWAY' };
+  HOME: { name: string; type: 'HOME' };
+}
+
+export interface ClientScoreRecord {
+  away: string;
+  home: string;
+  type: string;
+}
+
+export type ClientScores = Record<string, ClientScoreRecord>;
+
+export type ClientState = Record<string, ClientStateRecord>;
+
+export interface ClientStateRecord {
+  competition: string;
+  competitors: ClientCompetitors;
+  id: string;
+  scores: ClientScores;
+  sport: string;
+  startTime: string;
+  status: string;
+}
+
 export type Mapping = Map<string, string>;
 
 /**
@@ -5,6 +30,7 @@ export type Mapping = Map<string, string>;
  * and have original date formats.
  */
 export type Odds = OddsRecord[];
+
 export type OddsOrig = OddsRecordOrig[];
 
 export interface OddsRecord {
@@ -76,6 +102,41 @@ export function convertOrigToTargetOdds(oddsOrig: OddsOrig, mapping: Mapping): O
     startTime: new Date(recordOrig.startTime).toISOString(),
   }));
   return odds;
+}
+
+export function convertTargetOddsToClientState(odds: Odds): ClientState {
+  const state: ClientState = {};
+  for (const record of odds) {
+    if (record.sportEventStatus !== 'REMOVED') {
+      const scores: ClientScores = {};
+      for (const score of record.scores) {
+        scores[score.period] = {
+          away: String(score.awayScore),
+          home: String(score.homeScore),
+          type: score.period,
+        };
+      }
+      state[record.sportEvent] = {
+        competition: record.competition,
+        competitors: {
+          AWAY: {
+            name: record.awayCompetitor,
+            type: 'AWAY',
+          },
+          HOME: {
+            name: record.homeCompetitor,
+            type: 'HOME',
+          },
+        },
+        id: record.sportEvent,
+        scores,
+        sport: record.sport,
+        startTime: record.startTime,
+        status: record.sportEventStatus,
+      };
+    }
+  }
+  return state;
 }
 
 export function parseMappings(input: string): Mapping {
