@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  convertOrigToTargetOdds,
+  Mapping,
+  Odds,
   OddsOrig,
   OddsScoresOrig,
   parseMappings,
@@ -83,6 +86,116 @@ const oddsIdsExamle = {
   result: OddsOrig;
 };
 
+const origToTargetOddsSimplified = {
+  mapping: new Map([
+    ['aaa', 'AAA'],
+    ['bbb', 'BBB'],
+    ['ccc', 'CCC'],
+  ]),
+  orig: [
+    {
+      awayCompetitorId: 'ac',
+      competitionId: 'ci',
+      homeCompetitorId: 'hc',
+      scores: [
+        {
+          awayScore: 1,
+          homeScore: 2,
+          periodId: 'pi1',
+        },
+        {
+          awayScore: 3,
+          homeScore: 4,
+          periodId: 'pi2',
+        },
+        {
+          awayScore: 5,
+          homeScore: 6,
+          periodId: 'aaa',
+        },
+      ],
+      sportEventId: 'sei',
+      sportEventStatusId: 'sesi',
+      sportId: 'si',
+      startTime: 1739798660151,
+    },
+    {
+      awayCompetitorId: 'bbb',
+      competitionId: 'ci',
+      homeCompetitorId: 'hc',
+      scores: [
+        {
+          awayScore: 10,
+          homeScore: 20,
+          periodId: 'pi1',
+        },
+        {
+          awayScore: 15,
+          homeScore: 25,
+          periodId: 'pi2',
+        },
+      ],
+      sportEventId: 'sei',
+      sportEventStatusId: 'sesi',
+      sportId: 'ccc',
+      startTime: 1739798660151,
+    },
+  ],
+  target: [
+    {
+      awayCompetitor: 'ac',
+      competition: 'ci',
+      homeCompetitor: 'hc',
+      scores: [
+        {
+          awayScore: 1,
+          homeScore: 2,
+          period: 'pi1',
+        },
+        {
+          awayScore: 3,
+          homeScore: 4,
+          period: 'pi2',
+        },
+        {
+          awayScore: 5,
+          homeScore: 6,
+          period: 'AAA',
+        },
+      ],
+      sport: 'si',
+      sportEvent: 'sei',
+      sportEventStatus: 'sesi',
+      startTime: '2025-02-17T13:24:20.151Z',
+    },
+    {
+      awayCompetitor: 'BBB',
+      competition: 'ci',
+      homeCompetitor: 'hc',
+      scores: [
+        {
+          awayScore: 10,
+          homeScore: 20,
+          period: 'pi1',
+        },
+        {
+          awayScore: 15,
+          homeScore: 25,
+          period: 'pi2',
+        },
+      ],
+      sport: 'CCC',
+      sportEvent: 'sei',
+      sportEventStatus: 'sesi',
+      startTime: '2025-02-17T13:24:20.151Z',
+    },
+  ],
+} satisfies {
+  mapping: Mapping;
+  orig: OddsOrig;
+  target: Odds;
+};
+
 describe('converters', () => {
   describe('parseMappings', () => {
     it('should fail for invalid input', () => {
@@ -130,6 +243,14 @@ describe('converters', () => {
     it('should parse example input', () => {
       const result = parseOddsOrig(oddsIdsExamle.raw);
       expect(result).toEqual(oddsIdsExamle.result);
+    });
+  });
+
+  describe('convertOrigToTargetOdds', () => {
+    it('should convert orig odds to target odds with mapping', () => {
+      const { mapping, orig, target } = origToTargetOddsSimplified;
+      const result = convertOrigToTargetOdds(orig, mapping);
+      expect(result).toEqual(target);
     });
   });
 });

@@ -49,6 +49,35 @@ const ODDS_FIELD_SEPARATOR = ',';
 const ODDS_SCORES_SEPARATOR = '|';
 const ODDS_SCORES_REGEX = /^([\w-]+)@(\d+):(\d+)$/;
 
+/**
+ * Maps IDs to names. Keeps the ID if the name cannot be found in the mapping.
+ */
+export class IdMapper {
+  constructor(private mapping: Mapping) {}
+  id(id: string): string {
+    return this.mapping.get(id) ?? id;
+  }
+}
+
+export function convertOrigToTargetOdds(oddsOrig: OddsOrig, mapping: Mapping): Odds {
+  const mapper = new IdMapper(mapping);
+  const odds: Odds = oddsOrig.map((recordOrig) => ({
+    awayCompetitor: mapper.id(recordOrig.awayCompetitorId),
+    competition: mapper.id(recordOrig.competitionId),
+    homeCompetitor: mapper.id(recordOrig.homeCompetitorId),
+    scores: recordOrig.scores.map((score) => ({
+      awayScore: score.awayScore,
+      homeScore: score.homeScore,
+      period: mapper.id(score.periodId),
+    })),
+    sport: mapper.id(recordOrig.sportId),
+    sportEvent: mapper.id(recordOrig.sportEventId),
+    sportEventStatus: mapper.id(recordOrig.sportEventStatusId),
+    startTime: new Date(recordOrig.startTime).toISOString(),
+  }));
+  return odds;
+}
+
 export function parseMappings(input: string): Mapping {
   const mapping: Mapping = new Map();
   for (const record of input.split(MAPPINGS_RECORD_SEPARATOR)) {
